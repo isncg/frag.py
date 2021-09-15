@@ -2,48 +2,43 @@
 from pathlib import Path
 from array import array
 
-from PIL import Image
-
 import moderngl
 import moderngl_window
+import json
 
+cfg = json.load(open('config.json', 'r'))
 
-class ImageProcessing(moderngl_window.WindowConfig):
-    window_size = 1076//2, 1436//2
+class App(moderngl_window.WindowConfig):
+    window_size = cfg['window']['width'], cfg['window']['height']
     resource_dir = Path(__file__).parent.resolve()
     aspect_ratio = None
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.image_processing = ImageTransformer(self.ctx, self.window_size)
-        self.texture = self.load_texture_2d("img/test2.jpg")
+    def setTextures(self):
+        loc = 0
+        for i in cfg['uniforms']:
+            u = cfg['uniforms'][i]
+            if u['type'] == 'sampler2D':
+                tex = self.load_texture_2d(u['value'])
+                self.textureMap[i] = tex
+                print('Loaded texture ', i, u['value'])
+                univar = self.program.get(i, None)
+                if univar is not None:
+                    tex.use(loc)
+                    univar.value = loc
+                    loc+=1
 
-    def render(self, time, frame_time):
-        self.image_processing.render(self.texture, time, target=self.ctx.screen)
-
-        # Headless
-        #self.image_processing.render(self.texture)
-        #self.image_processing.write("output.png")
-
-
-class ImageTransformer:
-
-    def __init__(self, ctx, size, program=None):
-        self.ctx = ctx
-        self.size = size
-        self.program = None
-        self.fbo = self.ctx.framebuffer(
-            color_attachments=[self.ctx.texture(self.size, 4)]
+    def loadProgram(self):
+        self.program = self.ctx.program(
+            vertex_shader = open(cfg['shaders']['vert']).read(),
+            fragment_shader = open(cfg['shaders']['frag']).read(),          
         )
 
-        # Create some default program if needed
-        if not program:
-            self.program = self.ctx.program(
-                vertex_shader = open("shader/vert.glsl").read(),
-                fragment_shader = open("shader/frag.glsl").read(),          
-            )
+    def setBuffers(self):
+        self.fbo = self.ctx.framebuffer(
+            color_attachments=[self.ctx.texture(self.window_size, 4)]
+        )
 
-        # Fullscreen quad in NDC
+                # Fullscreen quad in NDC
         self.vertices = self.ctx.buffer(
             array(
                 'f',
@@ -57,6 +52,7 @@ class ImageTransformer:
                 ]
             )
         )
+
         self.quad = self.ctx.vertex_array(
             self.program,
             [
@@ -64,24 +60,22 @@ class ImageTransformer:
             ]
         )
 
-    def render(self, texture, time, target=None):
-        if target:
-            target.use()
-        else:
-            self.fbo.use()
 
-        texture.use(0)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        
+        self.textureMap = dict()
+        print('Window size ',self.window_size)
+
+        self.loadProgram()
+        self.setBuffers()
+        self.setTextures()
+
+    def render(self, time, frame_time):
         p_time = self.program.get("time", None)
         if p_time is not None:
             p_time.value = time
-        #self.program["time2"].value = time
         self.quad.render(mode=moderngl.TRIANGLE_STRIP)
 
-    def write(self, name):
-        image = Image.frombytes("RGBA", self.fbo.size, self.fbo.read(components=4))
-        image = image.transpose(Image.FLIP_TOP_BOTTOM)
-        image.save(name, format="png")
-
-
 if __name__ == "__main__":
-    ImageProcessing.run()
+    App.run()
