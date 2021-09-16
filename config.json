@@ -1,8 +1,8 @@
 {
     "name": "spin",
     "window": {
-        "width": 720,
-        "height": 540
+        "width": 780,
+        "height": 400
     },
     "shaders": {
         "vert": "./shader/vert.glsl",
@@ -11,13 +11,13 @@
     "uniforms": {
         "image": {
             "type": "sampler2D",
-            "value": "./img/test1.jpg"
+            "value": "./img/unitycrash.png"
         },
         "size": {
             "type": "vec2",
             "value": [
-                720,
-                540
+                390.0,
+                211.0
             ]
         }
     }

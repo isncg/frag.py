@@ -13,19 +13,23 @@ class App(moderngl_window.WindowConfig):
     resource_dir = Path(__file__).parent.resolve()
     aspect_ratio = None
 
-    def setTextures(self):
+    def setUniforms(self):
         loc = 0
         for i in cfg['uniforms']:
+            univar = self.program.get(i, None)
+            if univar is None:
+                continue
             u = cfg['uniforms'][i]
+            value = u['value']
             if u['type'] == 'sampler2D':
-                tex = self.load_texture_2d(u['value'])
+                tex = self.load_texture_2d(value)
                 self.textureMap[i] = tex
-                print('Loaded texture ', i, u['value'])
-                univar = self.program.get(i, None)
-                if univar is not None:
-                    tex.use(loc)
-                    univar.value = loc
-                    loc+=1
+                print('Loaded texture ', i, value)
+                tex.use(loc)
+                univar.value = loc
+                loc+=1
+            elif u['type'] == 'vec2':
+                univar.value = (value[0], value[1])
 
     def loadProgram(self):
         self.program = self.ctx.program(
@@ -38,7 +42,7 @@ class App(moderngl_window.WindowConfig):
             color_attachments=[self.ctx.texture(self.window_size, 4)]
         )
 
-                # Fullscreen quad in NDC
+        # Fullscreen quad in NDC
         self.vertices = self.ctx.buffer(
             array(
                 'f',
@@ -69,7 +73,7 @@ class App(moderngl_window.WindowConfig):
 
         self.loadProgram()
         self.setBuffers()
-        self.setTextures()
+        self.setUniforms()
 
     def render(self, time, frame_time):
         p_time = self.program.get("time", None)
@@ -77,5 +81,5 @@ class App(moderngl_window.WindowConfig):
             p_time.value = time
         self.quad.render(mode=moderngl.TRIANGLE_STRIP)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     App.run()
