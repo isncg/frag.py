@@ -1,0 +1,24 @@
+{
+    "name": "spin",
+    "window": {
+        "width": 780,
+        "height": 400
+    },
+    "shaders": {
+        "vert": "./shader/vert.glsl",
+        "frag": "./shader/frag_spin.glsl"
+    },
+    "uniforms": {
+        "image": {
+            "type": "sampler2D",
+            "value": "./img/unitycrash.png"
+        },
+        "size": {
+            "type": "vec2",
+            "value": [
+                390.0,
+                211.0
+            ]
+        }
+    }
+}
