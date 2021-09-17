@@ -1,0 +1,33 @@
+{
+    "name": "spin",
+    "window": {
+        "width": 512,
+        "height": 512
+    },
+    "shaders": {
+        "vert": "./shader/vert.glsl",
+        "frag": "./shader/frag_edge.glsl"
+    },
+    "uniforms": {
+        "image": {
+            "type": "sampler2D",
+            "value": "./img/lena.jpg"
+        },
+        "image_size": {
+            "type": "vec2",
+            "value": [512, 512]
+        },
+        "clamp_range": {
+            "type": "vec2",
+            "value": [0.125, 0.875]
+        },
+        "feature_transform": {
+            "type": "vec2",
+            "value": [0, 1]
+        },
+        "conv_size_scale": {
+            "type": "float",
+            "value": 0.375
+        }
+    }
+}

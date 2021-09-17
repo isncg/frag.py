@@ -37,6 +37,8 @@ class App(moderngl_window.WindowConfig):
                 loc+=1
             elif u['type'] == 'vec2':
                 univar.value = (value[0], value[1])
+            else:
+                univar.value = value
 
     def loadProgram(self):
         self.program = self.ctx.program(
