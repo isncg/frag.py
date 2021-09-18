@@ -1,0 +1,17 @@
+{
+    "name": "raytracing",
+    "window": {
+        "width": 1280,
+        "height": 720
+    },
+    "shaders": {
+        "vert": "./shader/vert_raytracing.glsl",
+        "frag": "./shader/frag_raytracing.glsl"
+    },
+    "uniforms": {
+        "iResolution":{
+            "type":"ivec2",
+            "value":[1280, 720]
+        }
+    }
+}

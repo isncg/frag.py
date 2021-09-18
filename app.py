@@ -33,7 +33,7 @@ class App(moderngl_window.WindowConfig):
                 tex.use(loc)
                 univar.value = loc
                 loc += 1
-            elif u['type'] == 'vec2':
+            elif u['type'] == 'vec2' or u['type'] == 'ivec2':
                 univar.value = (value[0], value[1])
             else:
                 univar.value = value
