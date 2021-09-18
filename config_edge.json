@@ -19,7 +19,7 @@
         },
         "clamp_range": {
             "type": "vec2",
-            "value": [0.125, 0.875]
+            "value": [0.25, 0.75]
         },
         "feature_transform": {
             "type": "vec2",
@@ -28,6 +28,14 @@
         "conv_size_scale": {
             "type": "float",
             "value": 0.375
+        },
+        "try_count": {
+            "type": "int",
+            "value": 100
+        },
+        "try_step": {
+            "type": "float",
+            "value": 0.01
         }
     }
 }
