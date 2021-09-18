@@ -1,32 +1,30 @@
-# This example opens an image, and offsets the red, green, and blue channels to create a glitchy RGB split effect.
-from logging import Logger
 from pathlib import Path
 from array import array
-from sys import argv
 
 import moderngl
 import moderngl_window
 import json
 
-from argparse import ArgumentParser, Namespace
 from moderngl_window.context.base.window import WindowConfig
-
 from moderngl_window.timers.clock import Timer
 from moderngl_window import logger
 
-cfg = None#json.load(open('config.json', 'r'))
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+
 
 class App(moderngl_window.WindowConfig):
     resource_dir = Path(__file__).parent.resolve()
     aspect_ratio = None
     #cfg = json.load(open(argv.config, 'r'))
+
     def setUniforms(self):
         loc = 0
-        for i in cfg['uniforms']:
+        for i in self.cfg['uniforms']:
             univar = self.program.get(i, None)
             if univar is None:
                 continue
-            u = cfg['uniforms'][i]
+            u = self.cfg['uniforms'][i]
             value = u['value']
             if u['type'] == 'sampler2D':
                 tex = self.load_texture_2d(value)
@@ -34,16 +32,20 @@ class App(moderngl_window.WindowConfig):
                 print('Loaded texture ', i, value)
                 tex.use(loc)
                 univar.value = loc
-                loc+=1
+                loc += 1
             elif u['type'] == 'vec2':
                 univar.value = (value[0], value[1])
             else:
                 univar.value = value
 
+    def onFileChange(self, src_path):
+        if(src_path == './'+self.argv.config or src_path == '.\\'+self.argv.config):
+            self.needReloadUniform = True
+
     def loadProgram(self):
         self.program = self.ctx.program(
-            vertex_shader = open(cfg['shaders']['vert']).read(),
-            fragment_shader = open(cfg['shaders']['frag']).read(),          
+            vertex_shader=open(self.cfg['shaders']['vert']).read(),
+            fragment_shader=open(self.cfg['shaders']['frag']).read(),
         )
 
     def setBuffers(self):
@@ -59,9 +61,9 @@ class App(moderngl_window.WindowConfig):
                     # Triangle strip creating a fullscreen quad
                     # x, y, u, v
                     -1,  1, 0, 1,  # upper left
-                    -1, -1, 0, 0, # lower left
-                     1,  1, 1, 1, # upper right
-                     1, -1, 1, 0, # lower right
+                    -1, -1, 0, 0,  # lower left
+                    1,  1, 1, 1,  # upper right
+                    1, -1, 1, 0,  # lower right
                 ]
             )
         )
@@ -73,22 +75,33 @@ class App(moderngl_window.WindowConfig):
             ]
         )
 
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         print("ARGV: ", self.argv)
+        self.cfg = json.load(open(self.argv.config, 'r'))
         self.textureMap = dict()
-        print('Window size ',self.window_size)
+        print('Window size ', self.window_size)
 
         self.loadProgram()
         self.setBuffers()
-        self.setUniforms()
+        self.needReloadUniform = True
+        #self.setUniforms()
+
+        event_handler = FileChangeHandler(self.onFileChange)
+        self.observer = Observer()
+        self.observer.schedule(event_handler,  path='./',  recursive=False)
+        self.observer.start()
 
     def render(self, time, frame_time):
         p_time = self.program.get("time", None)
         if p_time is not None:
             p_time.value = time
         self.quad.render(mode=moderngl.TRIANGLE_STRIP)
+        if self.needReloadUniform:
+            self.cfg = json.load(open(self.argv.config, 'r'))
+            self.setUniforms()
+            self.needReloadUniform = False
+
 
 def run_window_config(config_cls: WindowConfig, timer=None, args=None) -> None:
     """
@@ -100,7 +113,7 @@ def run_window_config(config_cls: WindowConfig, timer=None, args=None) -> None:
         timer: A custom timer instance
         args: Override sys.args
     """
-    global cfg
+    #global cfg
     moderngl_window.setup_basic_logging(config_cls.log_level)
     parser = moderngl_window.create_parser()
     config_cls.add_arguments(parser)
@@ -167,6 +180,14 @@ def run_window_config(config_cls: WindowConfig, timer=None, args=None) -> None:
                 duration, window.frames / duration
             )
         )
+
+
+class FileChangeHandler(FileSystemEventHandler):
+    def __init__(self, action):
+        self.action = action
+
+    def on_modified(self,  event):
+        self.action(event.src_path)
 
 
 if __name__ == '__main__':

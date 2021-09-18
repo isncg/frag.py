@@ -1,5 +1,5 @@
 {
-    "name": "spin",
+    "name": "edge",
     "window": {
         "width": 512,
         "height": 512
@@ -23,7 +23,7 @@
         },
         "feature_transform": {
             "type": "vec2",
-            "value": [0, 1]
+            "value": [1, -1]
         },
         "conv_size_scale": {
             "type": "float",
