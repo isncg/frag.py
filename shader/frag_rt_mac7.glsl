@@ -12,36 +12,37 @@ uniform vec2 screenSize;
 out vec4 FragColor;
 
 //////////////////////////////////////////////////////////////////////////////
-uint m_u = uint(521288629);
-uint m_v = uint(362436069);
-
-uint GetUintCore(inout uint u, inout uint v)
+uint wseed;
+uint whash(uint seed)
 {
-	v = uint(36969) * (v & uint(65535)) + (v >> 16);
-	u = uint(18000) * (u & uint(65535)) + (u >> 16);
-	return (v << 16) + u;
+    seed = (seed ^ uint(61)) ^ (seed >> uint(16));
+    seed *= uint(9);
+    seed = seed ^ (seed >> uint(4));
+    seed *= uint(0x27d4eb2d);
+    seed = seed ^ (seed >> uint(15));
+    return seed;
 }
 
-float GetUniformCore(inout uint u, inout uint v)
+float randcore4()
 {
-	uint z = GetUintCore(u, v);
-	
-	return float(z) / uint(4294967295);
+	wseed = whash(wseed);
+
+	return float(wseed) * (1.0 / 4294967296.0);
 }
 
-float GetUniform()
+void seedcore3(vec2 screenCoord)
 {
-	return GetUniformCore(m_u, m_v);
+	wseed = uint(screenCoord.x * screenSize.x + screenCoord.y * screenSize.x * screenSize.y);
 }
 
-uint GetUint()
+void seed(vec2 screenCoord)
 {
-	return GetUintCore(m_u, m_v);
+	seedcore3(screenCoord);
 }
 
 float rand()
 {
-	return GetUniform();
+	return randcore4();
 }
 
 vec2 rand2()
@@ -387,36 +388,36 @@ bool SphereHit(Sphere sphere, Ray ray, float t_min, float t_max, inout HitRecord
 			return true;
 		}
 
-		// temp = (-b + sqrt(discriminant)) / (2.0 * a);
-		// if(temp < t_max && temp> t_min)
-		// {
-		// 	hitRecord.t = temp;
-		// 	hitRecord.position = RayGetPointAt(ray, hitRecord.t);
-		// 	hitRecord.normal = (hitRecord.position - sphere.center) / sphere.radius;
+		temp = (-b + sqrt(discriminant)) / (2.0 * a);
+		if(temp < t_max && temp> t_min)
+		{
+			hitRecord.t = temp;
+			hitRecord.position = RayGetPointAt(ray, hitRecord.t);
+			hitRecord.normal = (hitRecord.position - sphere.center) / sphere.radius;
 
-		// 	hitRecord.materialType = sphere.materialType;
-		// 	hitRecord.material = sphere.material;
+			hitRecord.materialType = sphere.materialType;
+			hitRecord.material = sphere.material;
 			
-		// 	return true;
-		// }
+			return true;
+		}
 	}
 	
 	return false;
 }
 
-////////////////////////////////////////////////////////////////////////////////////
-World WorldConstructor()
-{
-	World world;
+// ////////////////////////////////////////////////////////////////////////////////////
+// World WorldConstructor()
+// {
+// 	World world;
 
-	world.objectCount = 4;
-	world.objects[0] = SphereConstructor(vec3( 0.0,    0.0, -1.0), 0.25, MAT_LAMBERTIAN, 0);
-	world.objects[1] = SphereConstructor(vec3( 0.7,    0.0, -1.0), 0.25, MAT_METALLIC, 1);
-	world.objects[2] = SphereConstructor(vec3(-0.7,    0.0, -1.0), 0.25, MAT_DIELECTRIC, 2);
-	world.objects[3] = SphereConstructor(vec3( 0.0, -100.5, -1.0), 100.0, MAT_LAMBERTIAN, 3);
+// 	world.objectCount = 4;
+// 	world.objects[0] = SphereConstructor(vec3( 0.0,    0.0, -1.0), 0.25, MAT_LAMBERTIAN, 0);
+// 	world.objects[1] = SphereConstructor(vec3( 0.7,    0.0, -1.0), 0.25, MAT_METALLIC, 1);
+// 	world.objects[2] = SphereConstructor(vec3(-0.7,    0.0, -1.0), 0.25, MAT_DIELECTRIC, 2);
+// 	world.objects[3] = SphereConstructor(vec3( 0.0, -100.5, -1.0), 100.0, MAT_LAMBERTIAN, 3);
 
-	return world;
-}
+// 	return world;
+// }
 
 bool WorldHit(World world, Ray ray, float t_min, float t_max, inout HitRecord rec)
 {
@@ -527,6 +528,7 @@ vec3 InverseGammaCorrection(vec3 c)
 uniform int ns;
 void main()
 {
+	seed(screenCoord);
 	vec3 col = vec3(0.0, 0.0, 0.0);
 	//int ns = 100;
 	for(int i=0; i<ns; i++)

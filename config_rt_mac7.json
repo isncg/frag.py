@@ -5,8 +5,8 @@
         "height": 600
     },
     "shaders": {
-        "vert": "./shader/vert_rt1.glsl",
-        "frag": "./shader/frag_rt1.glsl"
+        "vert": "./shader/vert_rt_mac7.glsl",
+        "frag": "./shader/frag_rt_mac7.glsl"
     },
     "uniforms": {
         "image":                    { "type": "sampler2D", "value": "./img/lena.jpg"    },
@@ -15,7 +15,7 @@
         "camera.vertical":          { "type": "vec3",      "value": [0.0, 1.5, 0.0]     },
         "camera.origin":            { "type": "vec3",      "value": [0.0, 0.0, 0.0]     },
         "screenSize":               { "type": "vec2",      "value": [800, 600]          },
-        "ns":                       { "type": "int",       "value": 1024                },
+        "ns":                       { "type": "int",       "value": 64                },
         "world.objectCount":        { "type": "int",       "value": 4                   },
    
         "lambertMaterials[0].albedo": {"type": "vec3", "value":[0.7, 0.5, 0.5]},
@@ -34,16 +34,16 @@
 
         "dielectricMaterials[0].albedo":    {"type": "vec3",  "value":[1.0, 1.0, 1.0]},
         "dielectricMaterials[0].roughness": {"type": "float", "value":0.0},
-        "dielectricMaterials[0].ior":       {"type": "float", "value":1.02},
+        "dielectricMaterials[0].ior":       {"type": "float", "value":1.5},
         "dielectricMaterials[1].albedo":    {"type": "vec3",  "value":[1.0, 1.0, 1.0]},
         "dielectricMaterials[1].roughness": {"type": "float", "value":0.1},
-        "dielectricMaterials[1].ior":       {"type": "float", "value":1.02},
+        "dielectricMaterials[1].ior":       {"type": "float", "value":1.5},
         "dielectricMaterials[2].albedo":    {"type": "vec3",  "value":[1.0, 1.0, 1.0]},
         "dielectricMaterials[2].roughness": {"type": "float", "value":0.2},
-        "dielectricMaterials[2].ior":       {"type": "float", "value":1.02},
+        "dielectricMaterials[2].ior":       {"type": "float", "value":1.5},
         "dielectricMaterials[3].albedo":    {"type": "vec3",  "value":[1.0, 1.0, 1.0]},
         "dielectricMaterials[3].roughness": {"type": "float", "value":0.3},
-        "dielectricMaterials[3].ior":       {"type": "float", "value":1.02},
+        "dielectricMaterials[3].ior":       {"type": "float", "value":1.5},
 
         "world.objects[0].center":        { "type": "vec3",      "value": [0.0, 0.0, -2.0] },
         "world.objects[0].radius":        { "type": "float",     "value": 0.25             },
