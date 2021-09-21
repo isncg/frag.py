@@ -35,6 +35,8 @@ class App(moderngl_window.WindowConfig):
                 loc += 1
             elif u['type'] == 'vec2' or u['type'] == 'ivec2':
                 univar.value = (value[0], value[1])
+            elif u['type'] == 'vec3' or u['type'] == 'ivec3':
+                univar.value = (value[0], value[1], value[2])
             else:
                 univar.value = value
 

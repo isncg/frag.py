@@ -1,0 +1,68 @@
+{
+    "name": "none",
+    "window": {
+        "width": 800,
+        "height": 600
+    },
+    "shaders": {
+        "vert": "./shader/vert_rt1.glsl",
+        "frag": "./shader/frag_rt1.glsl"
+    },
+    "uniforms": {
+        "image":                    { "type": "sampler2D", "value": "./img/lena.jpg"    },
+        "camera.lower_left_corner": { "type": "vec3",      "value": [-1.0, -0.75, -2] },
+        "camera.horizontal":        { "type": "vec3",      "value": [2.0, 0.0, 0.0]     },
+        "camera.vertical":          { "type": "vec3",      "value": [0.0, 1.5, 0.0]     },
+        "camera.origin":            { "type": "vec3",      "value": [0.0, 0.0, 0.0]     },
+        "screenSize":               { "type": "vec2",      "value": [800, 600]          },
+        "ns":                       { "type": "int",       "value": 1024                },
+        "world.objectCount":        { "type": "int",       "value": 4                   },
+   
+        "lambertMaterials[0].albedo": {"type": "vec3", "value":[0.7, 0.5, 0.5]},
+        "lambertMaterials[1].albedo": {"type": "vec3", "value":[0.5, 0.7, 0.5]},
+        "lambertMaterials[2].albedo": {"type": "vec3", "value":[0.5, 0.5, 0.7]},
+        "lambertMaterials[3].albedo": {"type": "vec3", "value":[0.7, 0.7, 0.7]},
+
+        "metallicMaterials[0].albedo":    {"type": "vec3",  "value":[0.7, 0.5, 0.5]},
+        "metallicMaterials[0].roughness": {"type": "float", "value":0.0},
+        "metallicMaterials[1].albedo":    {"type": "vec3",  "value":[0.5, 0.7, 0.5]},
+        "metallicMaterials[1].roughness": {"type": "float", "value":0.1},
+        "metallicMaterials[2].albedo":    {"type": "vec3",  "value":[0.5, 0.5, 0.7]},
+        "metallicMaterials[2].roughness": {"type": "float", "value":0.2},
+        "metallicMaterials[3].albedo":    {"type": "vec3",  "value":[0.7, 0.7, 0.7]},
+        "metallicMaterials[3].roughness": {"type": "float", "value":0.3},
+
+        "dielectricMaterials[0].albedo":    {"type": "vec3",  "value":[1.0, 1.0, 1.0]},
+        "dielectricMaterials[0].roughness": {"type": "float", "value":0.0},
+        "dielectricMaterials[0].ior":       {"type": "float", "value":1.02},
+        "dielectricMaterials[1].albedo":    {"type": "vec3",  "value":[1.0, 1.0, 1.0]},
+        "dielectricMaterials[1].roughness": {"type": "float", "value":0.1},
+        "dielectricMaterials[1].ior":       {"type": "float", "value":1.02},
+        "dielectricMaterials[2].albedo":    {"type": "vec3",  "value":[1.0, 1.0, 1.0]},
+        "dielectricMaterials[2].roughness": {"type": "float", "value":0.2},
+        "dielectricMaterials[2].ior":       {"type": "float", "value":1.02},
+        "dielectricMaterials[3].albedo":    {"type": "vec3",  "value":[1.0, 1.0, 1.0]},
+        "dielectricMaterials[3].roughness": {"type": "float", "value":0.3},
+        "dielectricMaterials[3].ior":       {"type": "float", "value":1.02},
+
+        "world.objects[0].center":        { "type": "vec3",      "value": [0.0, 0.0, -2.0] },
+        "world.objects[0].radius":        { "type": "float",     "value": 0.25             },
+        "world.objects[0].materialType":  { "type": "int",       "value": 0                },
+        "world.objects[0].material":      { "type": "int",       "value": 0                },
+        
+        "world.objects[1].center":        { "type": "vec3",      "value": [0.0, -100.255, -2.0] },
+        "world.objects[1].radius":        { "type": "float",     "value": 100                 },
+        "world.objects[1].materialType":  { "type": "int",       "value": 0               },
+        "world.objects[1].material":      { "type": "int",       "value": 3                },
+
+        "world.objects[2].center":        { "type": "vec3",      "value": [0.7, 0.0, -2.0] },
+        "world.objects[2].radius":        { "type": "float",     "value": 0.25             },
+        "world.objects[2].materialType":  { "type": "int",       "value": 1                },
+        "world.objects[2].material":      { "type": "int",       "value": 2                },
+
+        "world.objects[3].center":        { "type": "vec3",      "value": [-0.3, 0.0, -1.3] },
+        "world.objects[3].radius":        { "type": "float",     "value": 0.25             },
+        "world.objects[3].materialType":  { "type": "int",       "value": 2                },
+        "world.objects[3].material":      { "type": "int",       "value": 2                }
+    }
+}

@@ -1,3 +1,4 @@
 moderngl
 moderngl_window
 pathlib
+watchdog
