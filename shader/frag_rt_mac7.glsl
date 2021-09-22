@@ -388,7 +388,7 @@ bool SphereHit(Sphere sphere, Ray ray, float t_min, float t_max, inout HitRecord
 			return true;
 		}
 
-		temp = (-b + sqrt(discriminant)) / (2.0 * a);
+		temp = (-b + sqrt(discriminant)) / a;
 		if(temp < t_max && temp> t_min)
 		{
 			hitRecord.t = temp;
